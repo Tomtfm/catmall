@@ -1,0 +1,245 @@
+<template>
+	<div id="detail">
+		<detail-nav-bar @titleClick="titleClick" ref="nav"/>
+		<!-- 给详情页 加上 滚动效果 Better-Scroll -->
+		<scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll">
+			<detail-swiper :top-images="topImages"/>
+			<detail-base-info :goods="goods"/>
+			<detail-shop-info :shop="shopInfo"/>
+			<detail-goods-info :detail-info="detailInfo" @detailImageLoad="detailImageLoad"/>
+			<detail-param-info ref="params" :param-info="paramInfo"/>
+			<detail-comment-info ref="comment" :comment-info="commentInfo"/>
+			<goods-list ref="recommend" :goods="recommends"/>
+		</scroll>
+		<back-top @click.native="backClick" v-show="isShowBackTop"/>
+		
+		<!-- 底部工具栏 -->
+		<detail-bottom-bar @addCart="addToCart"/>
+	</div>		
+</template>
+
+<script>
+	// detail子组件区
+	import DetailNavBar from './childcomps/DetailNavBar'
+	import DetailSwiper from './childcomps/DetailSwiper'
+	import DetailBaseInfo from './childcomps/DetailBaseInfo'
+	import DetailShopInfo from './childcomps/DetailShopInfo'
+	import DetailGoodsInfo from './childcomps/DetailGoodsInfo'
+	import DetailParamInfo from './childcomps/DetailParamInfo' 
+	import DetailCommentInfo from './childcomps/DetailCommentInfo'
+	import DetailBottomBar from './childcomps/DetailBottomBar'
+	
+	// 公共组价区（components/common）
+	import Scroll from 'components/common/scroll/Scroll'
+	import GoodsList from 'components/content/goods/GoodsList'
+	
+	// 网络请求区
+	import {getDetail, Goods, getRecommend} from 'network/detail'
+	import {debounce} from 'common/Utils'
+	import {itemListenerMixin, backTopMixin} from 'common/mixin'
+	
+	import { mapActions } from 'vuex'
+
+	export default {
+		name: 'Detail',
+		components: {
+			DetailNavBar,
+			DetailSwiper,
+			DetailBaseInfo,
+			DetailShopInfo,
+			DetailGoodsInfo,
+			DetailParamInfo,
+			DetailCommentInfo,
+			DetailBottomBar,
+			Scroll,
+			GoodsList
+		},
+		// mixins 混入操作
+		mixins: [itemListenerMixin, backTopMixin],
+		data() {
+			return {
+				iid: null,
+				topImages: [],
+				goods: {},
+				shopInfo: {},
+				detailInfo: {},
+				paramInfo: {},
+				commentInfo: {},
+				recommends: [],
+				themeTopYs: [],
+				getThemeTopY: null,
+				currentIndex: 0
+			}
+		},
+		created() {
+			// 1.保存传入的 iid
+			this.iid = this.$route.params.iid
+			
+			// 2.根据iid请求详情数据
+			getDetail(this.iid).then(res => {
+				// console.log(res);
+				// 获取数据
+				const data = res.result;
+				
+				// a、获取顶部的图片轮播数据
+				this.topImages = data.itemInfo.topImages
+				
+				// b、获取商品信息(将数据整合 到一起)
+				this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
+				
+				// c、创建店铺信息的对象
+				this.shopInfo = data.shopInfo
+				
+				// e、保存商品的详情数据
+				this.detailInfo = data.detailInfo
+				
+				// f、获取参数信息
+				this.paramInfo = data.itemParams
+				
+				// g、取出评论信息（不是每一个商品都有评论信息的，所以要给他进行判断）
+				if(data.rate.cRate != 0) {
+					// 通过下标取到 评论信息
+					this.commentInfo = data.rate.list[0]
+				}
+			
+				/*
+				// 获取到对应的内容位置：发现值不对
+				// 值不对的原因：
+				// a、图片没有计算在内；
+				// b、this.$refs.params.$el压根没有进行渲染；
+				this.$nextTick(() => {
+					// 根据最新的数据，对应的DOM时已经被渲染出来
+					// 但是图片依然是没有加载完成（目前获取到offsetTop不包含其中的图片）
+					// offsetTop值不对的时候，都是因为图片的问题
+					this.themeTopYs = []
+					
+					this.themeTopYs.push(0);
+					this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+					this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+					this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+					
+					console.log(this.themeTopYs);
+				})*/
+			})
+			
+			// 3.请求推荐数据
+			getRecommend().then(res => {
+				this.recommends = res.data.list
+			})
+			
+			// 4.给 getThemeTopY赋值(对给 	this.themeTopYs赋值的操作进行防抖)
+			this.getThemeTopY = debounce(() => {
+				// 获取到对应的内容位置（并在 methods函数中进行 调用）
+				this.themeTopYs = []
+				this.themeTopYs.push(0);
+				this.themeTopYs.push(this.$refs.params.$el.offsetTop);
+				this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
+				this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
+				this.themeTopYs.push(Number.MAX_VALUE);  //获取最大值 
+				// console.log(this.themeTopYs);
+			}, 100)
+		},
+		mounted() {
+			
+		},
+		destroyed() {
+			// 取消全局事件的监听
+			this.$bus.$off('itemImgLoad', this.itemImgListener)
+		},
+		methods: {
+			// mapActions 映射 addCart 函数
+			...mapActions(['addCart']),
+			detailImageLoad() {
+				this.refresh()
+				
+				// 获取到对应的内容位置	
+				this.getThemeTopY()
+			},
+			titleClick(index) {
+				this.$refs.scroll.scrollTo(0, -this.themeTopYs[index], 500)
+			},
+			contentScroll(position) {
+				// 1.获取Y值
+				const positionY = -position.y
+				
+				// 2.positionY和主题中的值进行对比: [0, 2627, 3641, 3836]
+				// 判断对比的思路：
+				// positionY在 0 和 2627 之间， index = 0；
+				// positionY在 2627 和 3641 之间， index = 1；
+				// positionY在 3641 和 3836 之间， index = 2；
+				// positionY 大于等于 3836值， index = 3；
+				let length = this.themeTopYs.length;
+				
+				// 方案一：
+				// for(let i =0; i < length; i++){
+				// 	if(this.currentIndex !== i && (i < length - 1 && positionY >= this.themeTopYs[i] &&
+				// 		positionY < this.themeTopYs[i+1]) || (i == length - 1 && positionY >= this.themeTopYs[i])){
+				// 		this.currentIndex = i;
+				// 		this.$refs.nav.currentIndex = this.currentIndex;
+				// 	}
+				// }
+				
+				// 方案二：简化方案一 使用Number.MAX_VALUE做判断（Number.MAX_VALUE ：实际没什么意义）
+				for(let i =0; i < length - 1; i++){
+					if(this.currentIndex !== i && (positionY >= this.themeTopYs[i] &&
+						positionY < this.themeTopYs[i+1])){
+						this.currentIndex = i;
+						this.$refs.nav.currentIndex = this.currentIndex;
+					}
+				}
+				
+				// 3.判断BackTop是否显示（此方法已混入封装）
+				this.listShowBackTop(position)
+			},
+			
+			// 监听点击加入购物车
+			addToCart() {
+				// 1.获取购物车需要展示的商品信息
+				const product = {}
+				product.image = this.topImages[0]; //图片
+				product.title = this.goods.title;  //标题
+				product.desc = this.goods.desc;		 //基本信息 
+				product.price = this.goods.realPrice;  //价格
+				product.iid = this.iid; //最后 id必须转入
+				
+				// 2.将商品添加到购物车里
+				// this.$store.commit('addCart', product)
+				
+				// i.使用 Actions 返回一个 Promise：
+				// this.$store.dispatch('addCart', product).then(res => {
+				// 	console.log(res);
+				// })
+				
+				// i.使用 mapActions 的映射关系
+				this.addCart(product).then(res => {
+					// this.show = true
+					// this.message = res
+					
+					// // 显示一会儿，然后消失
+					// setTimeout(() => {
+					// 	this.show = false
+					// 	this.message = ''
+					// }, 1500)
+					
+					// 显示 小弹窗（提示）
+					this.$toast.show(res)
+				})
+			}
+		}
+	}
+</script>
+
+<style scoped>
+	#detail {
+		position: relative;
+		z-index: 1;
+		background-color: #fff;
+		height: 100vh;
+	}
+	
+	/* 设置固定 高度 方案二： */
+	.content {
+		background-color: #fff;
+		height: calc(100% - 44px - 49px);
+	}
+</style>
