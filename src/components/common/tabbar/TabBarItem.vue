@@ -25,7 +25,6 @@
 		},
 		computed: {
 			isActive() {
-				// $route ==> 表示哪个路由处于活跃就是哪个对象
 				return this.$route.path.indexOf(this.path) !== -1
 			},
 			activeStyle() {
