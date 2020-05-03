@@ -128,15 +128,8 @@
 				this.$refs.tabControl1.currentIndex = index
 				this.$refs.tabControl2.currentIndex = index
 			},
-			/*点击置顶 小按钮事件(此功能已封装到 mixin中)
-			// backClick() {
-			// 	// 注：在使用 $refs 时 必须要定义 ref="变量"（坑）
-			// 	// scrollTo(0, 0) 为面向对象的封装，以下调用为 Scroll组件及封装的方法；
-			// 	// 默认的 置顶时间为 500，也可自行定义；
-			// 	// this.$refs.scroll.scrollTo(0, 0)
-			// },
-			*/
-		
+			/*点击置顶 小按钮事件(此功能已封装到 mixin中)*/
+      
 			// 调用 scroll 实施监听事件
 			contentScroll(position) {
 				// 判断值大于多少是 显示置顶小按钮
@@ -190,9 +183,6 @@
 	}
 </script>
 
-<!-- 细节补充：scoped 表示作用域的意思； 
-				以下的样式只会在 当前 组件中起效果，而不会在 有相同类名的组件中起效果；
--->
 <style scoped>
 	#home {
 		/* padding-top: 44px; */
