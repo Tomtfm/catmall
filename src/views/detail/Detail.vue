@@ -101,25 +101,6 @@
 					// 通过下标取到 评论信息
 					this.commentInfo = data.rate.list[0]
 				}
-			
-				/*
-				// 获取到对应的内容位置：发现值不对
-				// 值不对的原因：
-				// a、图片没有计算在内；
-				// b、this.$refs.params.$el压根没有进行渲染；
-				this.$nextTick(() => {
-					// 根据最新的数据，对应的DOM时已经被渲染出来
-					// 但是图片依然是没有加载完成（目前获取到offsetTop不包含其中的图片）
-					// offsetTop值不对的时候，都是因为图片的问题
-					this.themeTopYs = []
-					
-					this.themeTopYs.push(0);
-					this.themeTopYs.push(this.$refs.params.$el.offsetTop);
-					this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
-					this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
-					
-					console.log(this.themeTopYs);
-				})*/
 			})
 			
 			// 3.请求推荐数据
@@ -162,24 +143,10 @@
 				// 1.获取Y值
 				const positionY = -position.y
 				
-				// 2.positionY和主题中的值进行对比: [0, 2627, 3641, 3836]
-				// 判断对比的思路：
-				// positionY在 0 和 2627 之间， index = 0；
-				// positionY在 2627 和 3641 之间， index = 1；
-				// positionY在 3641 和 3836 之间， index = 2；
-				// positionY 大于等于 3836值， index = 3；
+				// 2.positionY和主题中的值进行对比:
 				let length = this.themeTopYs.length;
-				
-				// 方案一：
-				// for(let i =0; i < length; i++){
-				// 	if(this.currentIndex !== i && (i < length - 1 && positionY >= this.themeTopYs[i] &&
-				// 		positionY < this.themeTopYs[i+1]) || (i == length - 1 && positionY >= this.themeTopYs[i])){
-				// 		this.currentIndex = i;
-				// 		this.$refs.nav.currentIndex = this.currentIndex;
-				// 	}
-				// }
-				
-				// 方案二：简化方案一 使用Number.MAX_VALUE做判断（Number.MAX_VALUE ：实际没什么意义）
+        
+				// 使用Number.MAX_VALUE做判断（Number.MAX_VALUE ：实际没什么意义）
 				for(let i =0; i < length - 1; i++){
 					if(this.currentIndex !== i && (positionY >= this.themeTopYs[i] &&
 						positionY < this.themeTopYs[i+1])){
@@ -203,24 +170,8 @@
 				product.iid = this.iid; //最后 id必须转入
 				
 				// 2.将商品添加到购物车里
-				// this.$store.commit('addCart', product)
-				
-				// i.使用 Actions 返回一个 Promise：
-				// this.$store.dispatch('addCart', product).then(res => {
-				// 	console.log(res);
-				// })
-				
 				// i.使用 mapActions 的映射关系
 				this.addCart(product).then(res => {
-					// this.show = true
-					// this.message = res
-					
-					// // 显示一会儿，然后消失
-					// setTimeout(() => {
-					// 	this.show = false
-					// 	this.message = ''
-					// }, 1500)
-					
 					// 显示 小弹窗（提示）
 					this.$toast.show(res)
 				})
