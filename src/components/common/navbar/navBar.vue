@@ -15,7 +15,6 @@
 <style scoped>
 	.nav-bar {
 		display: flex;
-		/* 导航栏一般设置 44px*/
 		height: 44px;
 		line-height: 44px;
 		text-align: center;
