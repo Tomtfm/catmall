@@ -44,35 +44,18 @@
 			},
 			// 全选按钮显示状态 设置
 			isSelectAll() {
-				// 循环 判断商品是否已选中完，如已选中完 全选按钮则显示，否则反之；
-				
-				// 没有商品数据的情况下 它也显示全选按钮，所以要给它做一个判断(必加):
 				if(this.cartList.length == 0) return false
-				
-				// 方法一:（filter缺点：性能不是特别高）
-				// return !(this.cartList.filter(item => !item.checked).length)
-				
+
 				// 方法二：使用 find函数
 				return !this.cartList.find(item => !item.checked)
-				
-				// 方法三：使用 for循环
-				// for (let item of this.cartList) {
-				// 	if(!item.checked) {
-				// 		return false
-				// 	}
-				// }
-				// return true
 			}
 		},
 		methods: {
 			// 点击全选按钮设置
 			checkClick() {
-				// 判断逻辑：
 				if(this.isSelectAll) {
-					// 1.如果原来都是全部选中的，点击时让其 全部不选中；
 					this.cartList.forEach(item => item.checked = false)
 				}else {
-					// 2.如果原来都是不选中的（或者 某些不选中的），点击时让其 全部选中；
 					this.cartList.forEach(item => item.checked = true)
 				}
 			},
