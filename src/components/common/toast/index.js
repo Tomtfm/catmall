@@ -3,8 +3,6 @@ import Toast from './Toast'
 const obj = {}
 
 obj.install = function(Vue) {
-	// document.body.appendChild(Toast.$el) 此方式获取的是一 空, 必须要让 $el 有值
-
 	// 1.创建组件构造器
 	const toastContrustor = Vue.extend(Toast)
 	
