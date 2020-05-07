@@ -1,7 +1,5 @@
 <template>
-	<!-- v-if="Object.keys(shop).length !== 0"：判断是否为空，有值就将其渲染，否则反之 -->
  <div class="shop-info" v-if="Object.keys(shop).length !== 0">
-    <!-- 商家logo及名称 -->
 		<div class="shop-top">
       <img :src="shop.shopLogo">
       <span class="title">{{shop.name}}</span>
@@ -73,7 +71,6 @@
 
   .shop-top {
     line-height: 45px;
-    /* 让元素垂直中心对齐 */
     display: flex;
     align-items: center;
   }
