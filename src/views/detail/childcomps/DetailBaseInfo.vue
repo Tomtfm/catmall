@@ -1,26 +1,20 @@
 <template>
   <div v-if="Object.keys(goods).length !== 0" class="base-info">
-    <!-- 标题 -->
 		<div class="info-title">{{goods.title}}</div>
-    <!-- 价格、折购 -->
 		<div class="info-price">
       <span class="n-price">{{goods.newPrice}}</span>
       <span class="o-price">{{goods.oldPrice}}</span>
-      <!-- 判断 商品是否有折扣，有就显示，无则反之 -->
-			<!-- :style="" 动态样式 -->
 			<span v-if="goods.discount" 
 						class="discount"
 						:style="{backgroundColor: goods.discountBgColor}">
 				{{goods.discount}}
 			</span>
     </div>
-		<!-- 快递信息 -->
     <div class="info-other">
       <span>{{goods.columns[0]}}</span>
       <span>{{goods.columns[1]}}</span>
       <span>{{goods.services[goods.services.length-1].name}}</span>
     </div>
-		<!-- 退货款、七天··· -->
     <div class="info-service">
       <span class="info-service-item" 
 						v-for="index in goods.services.length-1" :key="index">
@@ -79,8 +73,6 @@
     background-color: var(--color-high-text);
     border-radius: 8px;
     margin-left: 5px;
-
-    /*让元素上浮一些: 使用相对定位即可*/
     position: relative;
     top: -8px;
   }
