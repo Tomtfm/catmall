@@ -1,6 +1,4 @@
 import {request} from './request'
-
-//封装：获取对应商品数据的 url
 // 1.获取详情数据
 export function getDetail(iid) {
 	return request({
@@ -18,8 +16,6 @@ export function getRecommend() {
 	})
 } 
  
-
-// 对复杂的数据进行封装整合（面向对象的开发）
 // 1.对商品信息数据 进行封装整合
 export class Goods {
 	constructor(itemInfo, columns, services) {
