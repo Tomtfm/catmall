@@ -54,7 +54,6 @@
 			Scroll,
 			GoodsList
 		},
-		// mixins 混入操作
 		mixins: [itemListenerMixin, backTopMixin],
 		data() {
 			return {
@@ -84,7 +83,7 @@
 				// a、获取顶部的图片轮播数据
 				this.topImages = data.itemInfo.topImages
 				
-				// b、获取商品信息(将数据整合 到一起)
+				// b、获取商品信息
 				this.goods = new Goods(data.itemInfo, data.columns, data.shopInfo.services)
 				
 				// c、创建店铺信息的对象
@@ -96,9 +95,8 @@
 				// f、获取参数信息
 				this.paramInfo = data.itemParams
 				
-				// g、取出评论信息（不是每一个商品都有评论信息的，所以要给他进行判断）
+				// g、取出评论信息
 				if(data.rate.cRate != 0) {
-					// 通过下标取到 评论信息
 					this.commentInfo = data.rate.list[0]
 				}
 			})
@@ -108,7 +106,7 @@
 				this.recommends = res.data.list
 			})
 			
-			// 4.给 getThemeTopY赋值(对给 	this.themeTopYs赋值的操作进行防抖)
+			// 4.给 getThemeTopY赋值
 			this.getThemeTopY = debounce(() => {
 				// 获取到对应的内容位置（并在 methods函数中进行 调用）
 				this.themeTopYs = []
@@ -116,7 +114,7 @@
 				this.themeTopYs.push(this.$refs.params.$el.offsetTop);
 				this.themeTopYs.push(this.$refs.comment.$el.offsetTop);
 				this.themeTopYs.push(this.$refs.recommend.$el.offsetTop);
-				this.themeTopYs.push(Number.MAX_VALUE);  //获取最大值 
+				this.themeTopYs.push(Number.MAX_VALUE);
 				// console.log(this.themeTopYs);
 			}, 100)
 		},
@@ -128,7 +126,6 @@
 			this.$bus.$off('itemImgLoad', this.itemImgListener)
 		},
 		methods: {
-			// mapActions 映射 addCart 函数
 			...mapActions(['addCart']),
 			detailImageLoad() {
 				this.refresh()
@@ -146,7 +143,7 @@
 				// 2.positionY和主题中的值进行对比:
 				let length = this.themeTopYs.length;
         
-				// 使用Number.MAX_VALUE做判断（Number.MAX_VALUE ：实际没什么意义）
+				// 使用Number.MAX_VALUE做判断
 				for(let i =0; i < length - 1; i++){
 					if(this.currentIndex !== i && (positionY >= this.themeTopYs[i] &&
 						positionY < this.themeTopYs[i+1])){
@@ -155,7 +152,7 @@
 					}
 				}
 				
-				// 3.判断BackTop是否显示（此方法已混入封装）
+				// 3.判断BackTop是否显示
 				this.listShowBackTop(position)
 			},
 			
@@ -163,14 +160,13 @@
 			addToCart() {
 				// 1.获取购物车需要展示的商品信息
 				const product = {}
-				product.image = this.topImages[0]; //图片
-				product.title = this.goods.title;  //标题
-				product.desc = this.goods.desc;		 //基本信息 
-				product.price = this.goods.realPrice;  //价格
-				product.iid = this.iid; //最后 id必须转入
+				product.image = this.topImages[0]; 
+				product.title = this.goods.title; 
+				product.desc = this.goods.desc;	
+				product.price = this.goods.realPrice; 
+				product.iid = this.iid; 
 				
 				// 2.将商品添加到购物车里
-				// i.使用 mapActions 的映射关系
 				this.addCart(product).then(res => {
 					// 显示 小弹窗（提示）
 					this.$toast.show(res)
@@ -187,8 +183,7 @@
 		background-color: #fff;
 		height: 100vh;
 	}
-	
-	/* 设置固定 高度 方案二： */
+
 	.content {
 		background-color: #fff;
 		height: calc(100% - 44px - 49px);
