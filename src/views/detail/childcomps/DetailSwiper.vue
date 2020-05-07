@@ -27,7 +27,6 @@
 </script>
 
 <style scoped>
-	/* 对大图片 进行截取 */
 	.detail-swiper {
 		height: 300px;
 		overflow: hidden;
