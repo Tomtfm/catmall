@@ -45,8 +45,7 @@
 			// 全选按钮显示状态 设置
 			isSelectAll() {
 				if(this.cartList.length == 0) return false
-
-				// 方法二：使用 find函数
+        
 				return !this.cartList.find(item => !item.checked)
 			}
 		},
