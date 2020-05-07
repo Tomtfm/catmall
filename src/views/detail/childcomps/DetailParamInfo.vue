@@ -1,22 +1,17 @@
 <template>
   <div class="param-info" v-if="Object.keys(paramInfo).length !== 0">
-    <!-- 第一层table：遍历 尺码 外面添加div循环是为了 防止有多个数组的存在-->
 		<table v-for="(table, index) in paramInfo.rule.tables"
 					 class="info-size" :key="index">
 			<tr v-for="(tr, indey) in table" :key="indey">
 				<td v-for="(td, indez) in tr" :key="indez">{{td}}</td>
 			</tr>
 		</table>
-
-		<!--第二层table：遍历 参数 -->
     <table class="info-param">
       <tr v-for="(info, index) in paramInfo.info.set">
         <td class="info-param-key">{{info.key}}</td>
         <td class="param-value">{{info.value}}</td>
       </tr>
     </table>
-		
-		<!-- 进行判断 商品图片的展示 -->
     <div class="info-img" v-if="paramInfo.info.image">
       <img :src="paramInfo.info.image[0]" alt="">
     </div>
@@ -58,7 +53,6 @@
   }
 
   .info-param-key {
-    /*当value的数据量比较大的时候, 会挤到key,所以给一个固定的宽度*/
     width: 95px;
   }
 
