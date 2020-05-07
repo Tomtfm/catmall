@@ -23,6 +23,6 @@ export function request(config) {
 		// console.log(err);
 	})
 	
-	// 发送真正的网络请求
+	// 发送网络请求
 	return instance(config)
 }
