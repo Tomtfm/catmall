@@ -29,11 +29,6 @@
 			CartBottomBar
 		},
 		computed: {
-			// 新语法 ...mapGetters 的两种用法：
-			// 用法1：数组形式，但不可自定义名称
-			// ...mapGetters(['cartLength', 'cartList'])
-			
-			// 用法2：对象形式，可自定义名称
 			...mapGetters({
 				length: 'cartLength'
 			})
