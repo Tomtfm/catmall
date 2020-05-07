@@ -1,10 +1,7 @@
 <template>
 	<div id="profile">
 		<nav-bar class="nav-bar"><div slot="center">个人中心</div></nav-bar>
-		<!-- 1.显示 用户的基本信息 -->
 		<user-info/>
-		
-		<!-- 2.显示 余额积分信息 -->
 		<section class="account">
 			<div class="account-item">
 				<div class="number">
@@ -27,8 +24,6 @@
 				<div class="account-info">我的积分</div>
 			</div>
 		</section>
-	  
-		<!-- 3. 封装成一个整体 -->
 		<list-view :list-data="orderList" class="order-list"/>
 		<list-view :list-data="serviceList" class="service-list"/>
 	</div>
