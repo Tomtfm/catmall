@@ -12,12 +12,10 @@
 	export default {
 		name: 'Scroll',
 		props: {
-			// probeType 为滚动监听；
 			probeType: {
 				type: Number,
 				default: 0
 			},
-			// pullUpLoad 为上拉加载更多，默认为false
 			pullUpLoad: {
 				type: Boolean,
 				default: false
@@ -51,7 +49,6 @@
 			}
 		},
 		methods: {
-			//可设置默认time
 			scrollTo(x, y, time=500) {
 			this.scroll && this.scroll.scrollTo && this.scroll.scrollTo(x, y, time)
 			},
@@ -65,7 +62,6 @@
 			},
 			// 封装 getScrollY() 获取它的 动态高度
 			getScrollY() {
-				// 此为判断它有没有值，有的话就返回，否则就返回 0
 				return this.scroll ? this.scroll.y : 0
 			}
 		}
