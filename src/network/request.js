@@ -3,7 +3,6 @@ import axios from 'axios'
 export function request(config) {
 	// 1.创建 axios的实例
 	const instance = axios.create({
-		// 接口详情 请加老师VX（coderwhy002）
 		baseURL: 'http://123.207.32.32:8000',
 		timeout: 5000
 	})
